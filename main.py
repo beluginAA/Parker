@@ -1,6 +1,5 @@
-from parcer import Work
+from parcer import Vacancies
 
-information = Work()
-information.message()
-
-
+vacancies = Vacancies()
+vacancies.get()
+# vacancies.describe()
