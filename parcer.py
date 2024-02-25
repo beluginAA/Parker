@@ -37,24 +37,28 @@ class Vacancies:
             left, right = [int(number.replace(' ', '')) for number in amount.split(' —‍ ')]
             salary = int((left+right)/2)
         else:
-            salary = int(amount.replace("от", "").replace(" ", ""))
+            salary = int(amount.replace("от ", "").replace(" ", ""))
         return salary
     
     @staticmethod
-    def _get_stack(string:str) -> list[str]:
+    def _get_stack(string:str) -> dict[str:int]:
         array = string.replace('**Стек**: ', '').replace('.', '').split(', ')
-        correctArray = []
+        correctArray = {}
         for iter in array:
             if '/' not in iter:
-                correctArray.append(iter)
+                correctArray[iter] = 1
             else:
                 left,right = iter.split('/')
-                array.extend([left, right])
+                correctArray[left], correctArray[right] = 0.5, 0.5
         return correctArray
     
     @staticmethod
-    def _get_value(stack: list[str], salary:int) -> dict[str:int]:
-        pass
+    def _get_value(stack: dict[str:int], salary:int, amount = 0) -> dict[str:int]:
+        amount = sum([1 for value in stack.values() if value == 1])
+        cost = salary / amount
+        for key in stack.keys():
+            stack[key] == cost
+        return stack
 
     def get(self) -> None:
 
@@ -67,20 +71,16 @@ class Vacancies:
         for dialog in dialogs:
             if dialog.title == 'getmatch: бот с IT-вакансиями':
                 messages = self.client.iter_messages(dialog)
-
         for message in messages:
-            if message != lastVacancy:
+            if message.text != lastVacancy:
                 salary, stack = get_vacancy(message)
                 correctSalary = self._get_salary(salary)
                 correctStack = self._get_stack(stack)
-                self._get_value(correctStack, correctSalary)
-                break
+                values = self._get_value(correctStack, correctSalary)
             else:
-                break
-        
-        # for message in messages:
-        #     self._update_last_vacancy(message)
-        #     break
+                for message in messages:
+                    self._update_last_vacancy(message)
+                    break
     
     def describe(self) -> None:
         pass
