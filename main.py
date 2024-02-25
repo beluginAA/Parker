@@ -4,4 +4,4 @@ from mysql import Mysql
 vacancies = Vacancies()
 vacancies.get()
 
-mysql = Mysql()
+# mysql = Mysql()
