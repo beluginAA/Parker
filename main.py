@@ -1,5 +1,7 @@
 from parcer import Vacancies
+from mysql import Mysql
 
 vacancies = Vacancies()
 vacancies.get()
-# vacancies.describe()
+
+mysql = Mysql()
