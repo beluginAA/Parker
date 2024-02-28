@@ -2,23 +2,21 @@ from telethon.sync import TelegramClient
 from telethon.tl.functions.messages import GetDialogsRequest
 from telethon.tl.types import InputPeerEmpty
 
-from config import api_id, api_hash, phone, lastVacancy 
+from config import api_id, api_hash, lastVacancy 
 
-class Vacancies:
+class Job:
 
     def __init__(self):
         self.amountOfSkill = {}
-        self.client = TelegramClient(phone, api_id, api_hash)
+        self.client = TelegramClient('test_tg', api_id, api_hash)
         self.client.start()
     
-    @staticmethod
-    def _get_vacancy(vacancy: str) -> list[str]:
+    def _get_vacancy(self, vacancy: str) -> list[str]:
         information = vacancy.text.split('\n')
         salary, stack = information[1], information[6]
         return salary, stack
 
-    @staticmethod
-    def _update_last_vacancy(lastVacancy: str) -> None:
+    def _update_last_vacancy(self, lastVacancy: str) -> None:
         config_file = "config.py"
         lastVacancy = lastVacancy.text
 
@@ -36,8 +34,7 @@ class Vacancies:
         with open(config_file, "w") as file:
             file.writelines(updated_lines)
 
-    @staticmethod
-    def _get_salary(string:str) -> int:
+    def _get_salary(self, string:str) -> int:
         delimiter = " $" if '$' in string else " ₽"
         amount = string.split(delimiter)[0]
         if '—‍' in amount:
@@ -47,8 +44,7 @@ class Vacancies:
             salary = int(amount.replace("от ", "").replace(" ", ""))
         return salary
     
-    @staticmethod
-    def _get_stack(string:str) -> list[str]:
+    def _get_stack(self, string:str) -> list[str]:
         array = string.replace('**Стек**: ', '').replace('.', '').split(', ')
         correctArray = []
         for iter in array:
@@ -58,34 +54,13 @@ class Vacancies:
                 correctArray.extend(iter.split('/'))
         return correctArray
     
-    @staticmethod
-    def _get_value(stack: list[str], salary:int, amount: dict[str:int], resultStack = {}) -> dict[str:int]:
+    def _get_value(self, stack: list[str], salary:int) -> dict[str:int]:
         cost = salary / len(stack)
         for skill in stack:
-            resultStack[skill] = cost
-            amount.setdefault(skill, 0)
-            amount[skill] += 1
+            # resultStack[skill] = cost
+            self.amountOfSkill.setdefault(skill, 0)
+            self.amountOfSkill[skill] += 1
         # return stack
 
-    def get(self) -> None:
-
-        dialogs = self.client.get_dialogs() 
-        for dialog in dialogs:
-            if dialog.title == 'getmatch: бот с IT-вакансиями':
-                messages = self.client.iter_messages(dialog)
-
-        for message in messages:
-            if message != lastVacancy:
-                salary, stack = self._get_vacancy(message)
-                if not stack: continue
-                correctSalary = self._get_salary(salary)
-                correctStack = self._get_stack(stack)
-                self._get_value(correctStack, correctSalary, self.amountOfSkill)
-                break
-            else:
-                for message in messages:
-                    self._update_last_vacancy(message)
-                    break
-        return self.amountOfSkill
     
 
