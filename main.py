@@ -1,29 +1,33 @@
-from parcer import Job
+from parcer import Parcer
 from mysql import Mysql
 
 from config import lastVacancy 
 
-vacancy = Job()
+job = Parcer()
 
-dialogs = vacancy.client.get_dialogs() 
-for dialog in dialogs:
-    if dialog.title == 'getmatch: бот с IT-вакансиями':
-        messages = vacancy.client.iter_messages(dialog)
-        break
+messages = job._get_dialogs()
 
 for message in messages:
     if message != lastVacancy:
-        print(message.text)
-        salary, stack = vacancy._get_vacancy(message)
-        if not stack: continue
-        correctSalary = vacancy._get_salary(salary)
-        correctStack = vacancy._get_stack(stack)
-        vacancy._get_value(correctStack, correctSalary)
+        salary, stack = job._get_info(message)
+        if not stack or not salary: 
+            continue
+        correctSalary = job._get_salary(salary)
+        correctStack = job._get_stack(stack)
+        job._get_value(correctStack, correctSalary)
         break
     else:
-        for message in messages:
-            vacancy._update_last_vacancy(message)
-            break
+        job._get_last_vacancy(messages)
+
+mysql = Mysql()
+
+for key, value in job.amountOfSkill.items():
+    skills_list = mysql._get_skills()
+    if key in skills_list:
+        mysql._update(key, value)
+    else:
+        mysql._insert_into_skills_amount(key, value)
 
 
-# mysql = Mysql()
+
+
