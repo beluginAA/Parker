@@ -2,12 +2,14 @@ from telethon.sync import TelegramClient
 from telethon.tl.functions.messages import GetDialogsRequest
 from telethon.tl.types import InputPeerEmpty
 
-from config import api_id, api_hash, lastVacancy 
+from config import api_id, api_hash
+from last_vacancy import lastVacancy 
 
 class Parcer:
 
     def __init__(self):
         self.amountOfSkill = {}
+        self.amountOfVacancions = 0
         self.client = TelegramClient('test_tg', api_id, api_hash)
         self.client.start()
 
@@ -28,7 +30,7 @@ class Parcer:
         delimiter = " $" if '$' in string else " ₽"
         amount = string.split(delimiter)[0]
         if '—‍' in amount:
-            left, right = [int(number.replace(' ', '')) for number in amount.split(' —‍ ')]
+            left, right = [int(number.replace(' ', '').replace('\\u*d', '').replace("≈", "")) for number in amount.split(' —‍ ')]
             salary = int((left+right)/2)
         else:
             salary = int(amount.replace("от ", "").replace(" ", "").replace("≈ ", ""))
@@ -54,19 +56,19 @@ class Parcer:
     
     @staticmethod
     def _update_last_vacancy(lastVacancy: str) -> None:
-        config_file = "config.py"
+        config_file = "last_vacancy.py"
         lastVacancy = lastVacancy.text
 
         with open(config_file, "r") as file:
             lines = file.readlines()
-            found_last_vacancy, updated_lines = False, []
-            
+            updated_lines = []
+    
             for line in lines:
-                if "lastVacancy" in line:
-                    found_last_vacancy = True
-                    updated_lines.append(f"lastVacancy = \'''{lastVacancy}\'''\n")
-                elif not found_last_vacancy:
+                if "lastVacancy" not in line:
                     updated_lines.append(line)
+                else:
+                    updated_lines.append(f"lastVacancy = \'''{lastVacancy}\'''\n")
+                    break
 
         with open(config_file, "w") as file:
             file.writelines(updated_lines)

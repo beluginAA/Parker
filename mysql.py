@@ -41,10 +41,19 @@ class Mysql:
         # finally:
             # self.connection.close()
     
-    def _update(self, skill:str, value: int) -> None:
+    def _update_skills_amount(self, skill:str, value: int) -> None:
         # try:
             with self.connection.cursor() as cursor:
                 update_table_query = f"UPDATE skills_amount SET amount = amount + {value} WHERE skill = '{skill}';"
+                cursor.execute(update_table_query)
+                self.connection.commit()
+        # finally:
+            # self.connection.close() 
+    
+    def _update_vacanciess_amount(self, amount:int) -> None:
+        # try:
+            with self.connection.cursor() as cursor:
+                update_table_query = f"UPDATE vacancies_amount SET amount = amount + {amount};"
                 cursor.execute(update_table_query)
                 self.connection.commit()
         # finally:
