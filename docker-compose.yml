@@ -1,0 +1,25 @@
+version: '2'
+services:
+  mysql:
+    image: mysql/mysql-server:8.0
+    restart: always
+    volumes:
+      - /Users/aleksandrbelugin/Applications/mysql_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=pds_admin
+      - LANG=C.UTF-8
+    networks:
+      - db_network
+    container_name: mysql-parcer
+
+  grafana:
+    image: grafana/grafana:10.2.4
+    restart: always
+    ports:
+      - 3000:3000
+    container_name: grafana-parcer-server
+
+networks:
+  db_network:
