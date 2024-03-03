@@ -28,7 +28,7 @@ for key, value in job.amountOfSkill.items():
         mysql._update_skills_amount(key, value)
     else:
         mysql._insert_into_skills_amount(key, value)
-mysql._update_vacanciess_amount(job.amountOfVacancions)
+mysql._update_vacancies_amount(job.amountOfVacancions)
 
 
 

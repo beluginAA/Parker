@@ -13,50 +13,53 @@ class Mysql:
             print("Connection refused...")
     
     def _get_skills(self) -> list[str]:
-        # try:
+        try:
             with self.connection.cursor() as cursor:
                 get_skills_query = "SELECT skill FROM skills_amount;"
                 cursor.execute(get_skills_query)
                 
                 rows = cursor.fetchall()
                 skills_list = [row['skill'] for row in rows]
-        # finally:
-        #     self.connection.close() 
             return skills_list
+        except Exception as ex:
+            print("Mistake while getting skills...")
+    
+    def _get_skill_amount(self, skill:str) -> int:
+        try:
+            with self.connection.cursor() as cursor:
+                update_table_query = f"SELECT amount FROM skills_amount WHERE skill = '{skill}';"
+                cursor.execute(update_table_query)
 
-    # def _insert_into_skills(self, skill: str) -> None:
-    #     try:
-    #         with self.connection.cursor() as cursor:
-    #             insert_table_query = f"INSERT INTO `skills` (skill) VALUES ('{skill}')"
-    #             cursor.execute(insert_table_query)
-    #     finally:
-    #         self.connection.close()
+                rows = cursor.fetchall()
+                skill_amount = rows[0]['amount']
+                self.connection.commit()
+                return skill_amount
+        except Exception as ex:
+            print("Mistake while gitting skill's amount...")
 
     def _insert_into_skills_amount(self, skill: str, amount: int) -> None:
-        # try:
+        try:
             with self.connection.cursor() as cursor:
                 insert_table_query = f"INSERT INTO skills_amount (skill, amount) VALUES ('{skill}', {amount});"
                 cursor.execute(insert_table_query)
                 self.connection.commit()
-        # finally:
-            # self.connection.close()
+        except Exception as ex:
+            print("Mistake while inserting into skill's amount...")
     
     def _update_skills_amount(self, skill:str, value: int) -> None:
-        # try:
+        try:
             with self.connection.cursor() as cursor:
                 update_table_query = f"UPDATE skills_amount SET amount = amount + {value} WHERE skill = '{skill}';"
                 cursor.execute(update_table_query)
                 self.connection.commit()
-        # finally:
-            # self.connection.close() 
+        except Exception as ex:
+            print("Mistake while updating skill's amount...")
     
-    def _update_vacanciess_amount(self, amount:int) -> None:
-        # try:
+    def _update_vacancies_amount(self, amount:int) -> None:
+        try:
             with self.connection.cursor() as cursor:
                 update_table_query = f"UPDATE vacancies_amount SET amount = amount + {amount};"
                 cursor.execute(update_table_query)
                 self.connection.commit()
-        # finally:
-            # self.connection.close() 
-
-# mysql = Mysql()
+        except Exception as ex:
+            print("Mistake while updating amount of vacancies...")
