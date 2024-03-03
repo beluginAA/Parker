@@ -21,9 +21,10 @@ class Parcer:
                 break
         return messages
 
-    def _get_info(self, vacancy: str) -> list[str]:
+    def _get_info(self, vacancy: str, salary = '', stack = '') -> list[str]:
         information = vacancy.text.split('\n')
-        salary, stack = information[1], information[6]
+        if len(information) > 5:
+            salary, stack = information[1], information[6]
         return salary, stack
 
     def _get_salary(self, string:str) -> int:
@@ -38,9 +39,10 @@ class Parcer:
     
     def _get_stack(self, string:str) -> list[str]:
         array = string.replace('**Стек**: ', '').replace('.', '').split(', ')
+        exceptions = ['CI/CD']
         correctArray = []
         for iter in array:
-            if '/' not in iter:
+            if ('/' not in iter) or (iter in exceptions):
                 correctArray.append(iter)
             else:
                 correctArray.extend(iter.split('/'))

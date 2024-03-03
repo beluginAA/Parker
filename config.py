@@ -5,7 +5,7 @@ phone = '89778729273'
 
 #Конфиги для подключения к БД mysql
 host='127.0.0.1'
-port=33061
+port=3306
 user='us'
 password='User123!'
 database='parcer_info'
