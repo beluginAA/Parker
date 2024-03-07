@@ -39,7 +39,7 @@ class Parcer:
     
     def _get_stack(self, string:str) -> list[str]:
         array = string.replace('**Стек**: ', '').replace('.', '').split(', ')
-        exceptions = ['CI/CD']
+        exceptions = ['CI/CD', 'TCP/IP']
         correctArray = []
         for iter in array:
             if ('/' not in iter) or (iter in exceptions):
