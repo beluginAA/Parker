@@ -12,3 +12,4 @@ database='parcer_info'
 
 # Конфиги для телеграм-бота
 bot_token = '7159384316:AAGafzFgI_ehHtxtTGr4opXQhljP9zfO-NE'
+url_grafana = 'http://192.168.64.1:3000/d/c5b75efa-afbd-4747-b723-af2c997dade2/parcer-dashboard?orgId=1'

@@ -44,6 +44,8 @@ class Parcer:
         for iter in array:
             if ('/' not in iter) or (iter in exceptions):
                 correctArray.append(iter)
+            elif iter == 'Apache Kafka':
+                correctArray.append('Kafka')
             else:
                 correctArray.extend(iter.split('/'))
         return correctArray

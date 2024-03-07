@@ -12,6 +12,17 @@ class Mysql:
         except Exception as ex:
             print("Connection refused...")
     
+    def _get_vacancies_amount(self) -> int:
+        try:
+            with self.connection.cursor() as cursor:
+                get_vacancies_query = "SELECT amount FROM vacancies_amount;"
+                cursor.execute(get_vacancies_query)
+                
+                row = cursor.fetchall()
+            return row[0]['amount']
+        except Exception as ex:
+            print("Mistake while getting vacansies amount...")
+
     def _get_skills(self) -> list[str]:
         try:
             with self.connection.cursor() as cursor:
@@ -23,6 +34,32 @@ class Mysql:
             return skills_list
         except Exception as ex:
             print("Mistake while getting skills...")
+
+    def _get_most_popular_skills(self) -> list[str]:
+        try:
+            with self.connection.cursor() as cursor:
+                get_skills_query = "SELECT skill, amount FROM skills_amount ORDER BY amount DESC LIMIT 10;"
+                cursor.execute(get_skills_query)
+                
+                rows, popular_skills_list = cursor.fetchall(), []
+                for row in rows:
+                    popular_skills_list.append(f'{row["skill"]} - {row["amount"]}\n')
+            return popular_skills_list
+        except Exception as ex:
+            print("Mistake while getting the most popular skills...")
+    
+    def _get_less_popular_skills(self) -> list[str]:
+        try:
+            with self.connection.cursor() as cursor:
+                get_skills_query = "SELECT skill, amount FROM skills_amount ORDER BY amount LIMIT 10;"
+                cursor.execute(get_skills_query)
+                
+                rows, nonpopular_skills_list = cursor.fetchall(), []
+                for row in rows:
+                    nonpopular_skills_list.append(f'{row["skill"]} - {row["amount"]}\n')
+            return nonpopular_skills_list
+        except Exception as ex:
+            print("Mistake while getting the less popular skills...")
     
     def _get_skill_amount(self, skill:str) -> int:
         try:
