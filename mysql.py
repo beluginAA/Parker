@@ -35,6 +35,22 @@ class Mysql:
         except Exception as ex:
             print("Mistake while getting skills...")
 
+    def _get_skills_with_letters(self) -> dict[str:list[str]]:
+        try:
+            with self.connection.cursor() as cursor:
+                get_skills_query = "SELECT skill FROM skills_amount;"
+                cursor.execute(get_skills_query)
+                
+                rows = cursor.fetchall()
+                skills_list, word_dict = [row['skill'] for row in rows], {}
+                for word in skills_list:
+                    first_letter = word[0] 
+                    word_dict.setdefault(first_letter, []).append(word)
+                sorted_word_dict = dict(sorted(word_dict.items()))
+            return sorted_word_dict
+        except Exception as ex:
+            print("Mistake while getting skills with letters...")
+
     def _get_most_popular_skills(self) -> list[str]:
         try:
             with self.connection.cursor() as cursor:

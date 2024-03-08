@@ -46,6 +46,8 @@ class Parcer:
                 correctArray.append(iter)
             elif iter == 'Apache Kafka':
                 correctArray.append('Kafka')
+            elif iter in ['tcpdump', 'vSphere']:
+                correctArray.append(iter[0].upper() + iter[1:])
             else:
                 correctArray.extend(iter.split('/'))
         return correctArray
