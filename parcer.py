@@ -24,7 +24,14 @@ class Parcer:
     def _get_info(self, vacancy: str, salary = '', stack = '') -> list[str]:
         information = vacancy.text.split('\n')
         if len(information) > 5:
-            salary, stack = information[1], information[6]
+            for iter in information:
+                if 'на руки' in iter:
+                    salary = iter
+                elif 'Стек' in iter:
+                    stack = iter
+                    break
+        if salary == '':
+            salary = 'Вакансия без зарплаты'
         return salary, stack
 
     def _get_salary(self, string:str) -> int:
@@ -71,7 +78,8 @@ class Parcer:
         return correctArray
     
     def _get_value(self, stack: list[str], salary:int) -> dict[str:int]:
-        cost = salary / len(stack)
+        if salary != 'Вакансия без зарплаты':
+            cost = salary / len(stack)
         for skill in stack:
             # resultStack[skill] = cost
             self.amountOfSkill.setdefault(skill, 0)

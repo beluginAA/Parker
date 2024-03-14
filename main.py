@@ -8,14 +8,17 @@ job = Parcer()
 messages = job._get_dialogs()
 
 for message in messages:
-    if message.text != lastVacancy:
+    if message != lastVacancy:
         salary, stack = job._get_info(message)
         if not stack or not salary: 
             continue
         job.amountOfVacancions += 1
-        correctSalary = job._get_salary(salary)
         correctStack = job._get_stack(stack)
-        job._get_value(correctStack, correctSalary)
+        if salary != 'Вакансия без зарплаты':
+            correctSalary = job._get_salary(salary)
+            job._get_value(correctStack, correctSalary)
+        else:
+            job._get_value(correctStack, salary)
     else:
         job._get_last_vacancy(messages)
         break
