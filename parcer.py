@@ -42,14 +42,32 @@ class Parcer:
         exceptions = ['CI/CD', 'TCP/IP']
         correctArray = []
         for iter in array:
-            if ('/' not in iter) or (iter in exceptions):
-                correctArray.append(iter)
+            iter = iter.lstrip().rstrip()
+            if iter == 'NET 31/6':
+                correctArray.append('NET 3.1/6')
+            elif iter == 'Gitlab CI':
+                correctArray.append('CI/CD')
+            elif iter in ['Ubuntu', 'Debian']:
+                correctArray.append('Linux')
+            elif iter == 'HaProxy':
+                correctArray.append('HAProxy')
+            elif iter == 'Hashicorp Vault':
+                correctArray.append('HashiСorp Vault')
+            elif iter == 'MS SQL':
+                correctArray.append('Microsoft SQL Server')
+            elif iter in ['TCP', 'IPv4']:
+                correctArray.append('TCP/IP')
+            elif iter == 'TerraForm':
+                correctArray.append('Terraform')
             elif iter == 'Apache Kafka':
                 correctArray.append('Kafka')
             elif iter in ['tcpdump', 'vSphere']:
                 correctArray.append(iter[0].upper() + iter[1:])
+            elif ('/' not in iter) or (iter in exceptions):
+                correctArray.append(iter)
             else:
-                correctArray.extend(iter.split('/'))
+                iter = [skill.lstrip().rstrip() for skill in iter.split('/')]
+                correctArray.extend(iter)
         return correctArray
     
     def _get_value(self, stack: list[str], salary:int) -> dict[str:int]:
