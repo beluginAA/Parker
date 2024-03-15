@@ -8,7 +8,7 @@ job = Parcer()
 messages = job._get_dialogs()
 
 for message in messages:
-    if message != lastVacancy:
+    if message.text != lastVacancy:
         salary, stack = job._get_info(message)
         if not stack or not salary: 
             continue

@@ -35,7 +35,9 @@ class Parcer:
         return salary, stack
 
     def _get_salary(self, string:str) -> int:
-        delimiter = " $" if '$' in string else " ₽"
+        for deli in ['₽', '€', '$']:
+            if deli in string:
+                delimiter = ' ' + deli 
         amount = string.split(delimiter)[0]
         if '—‍' in amount:
             left, right = [int(number.replace(' ', '').replace('\\u*d', '').replace("≈", "")) for number in amount.split(' —‍ ')]
@@ -50,25 +52,97 @@ class Parcer:
         correctArray = []
         for iter in array:
             iter = iter.lstrip().rstrip()
-            if iter == 'NET 31/6':
+            if iter in ['NET 31/6', 'NET']:
                 correctArray.append('NET 3.1/6')
-            elif iter == 'Gitlab CI':
+            elif iter in ['Gitlab CI', 'CD', 'CI', 'GitLab CI']:
                 correctArray.append('CI/CD')
-            elif iter in ['Ubuntu', 'Debian']:
+            elif iter == 'Unix Shell':
+                correctArray.append('Bash')
+            elif iter in ['Ubuntu', 'Ubuntu', 'Debian', 'Astra Linux', 'CentOS', 'Debian GNU', 'Linux Kernel', 'RedHat', 'Rocky Linux', 'UNIX', 'Unix']:
                 correctArray.append('Linux')
+            elif iter in ['Docker Compose', 'Docker Swarm', 'Dockerfile']:
+                correctArray.append('Docker')
+            elif iter == 'VMware':
+                correctArray.append('VMWare')
+            elif iter == 'Victoria Metrics':
+                correctArray.append('VictoriaMetrics')
+            elif iter == 'Saltstack':
+                correctArray.append('SaltStack')
+            elif iter == 'Redis Cluster':
+                correctArray.append('Redis')
+            elif iter == 'REST':
+                correctArray.append('REST API')
+            elif iter == 'Logtash':
+                correctArray.append('Logstash')
+            elif iter == 'Nodejs':
+                correctArray.append('NodeJS')
+            elif iter == 'OSI Model':
+                correctArray.append('OSI')
             elif iter == 'HaProxy':
                 correctArray.append('HAProxy')
-            elif iter == 'Hashicorp Vault':
+            elif iter in ['ngnix', 'NGINX', 'nginx']:
+                correctArray.append('Nginx')
+            elif iter == 'OpenSeach':
+                correctArray.append('OpenSearch')
+            elif iter == 'postfix':
+                correctArray.append('Postfix')
+            elif iter == 'QEMU-KVM':
+                correctArray.append('QEMU')
+            elif iter == 'skopeo':
+                correctArray.append('Skopeo')
+            elif iter in ['Powershell', 'Shell']:
+                correctArray.append('PowerShell')
+            elif iter == 'pgSQL':
+                correctArray.append('PostgreSQL')
+            elif iter == 'K8s':
+                correctArray.append('Kubernetes')
+            elif iter == 'FirewallD':
+                correctArray.append('Firewall')
+            elif iter == 'JDK':
+                correctArray.append('Java')
+            elif iter == 'IPsec':
+                correctArray.append('IPS')
+            elif iter == 'Flux CD':
+                correctArray.append('Flux')
+            elif iter in ['Hashicorp Vault', 'Hashicorp Vault']:
                 correctArray.append('HashiСorp Vault')
-            elif iter == 'MS SQL':
+            elif iter == 'VMware ESXi':
+                correctArray.append('VMWare ESXi')
+            elif iter == 'HTTPS':
+                correctArray.append('HTTP')
+            elif iter in ['Helmfile', 'Help Desk']:
+                correctArray.append('Helm')
+            elif iter == 'YandexCloud':
+                correctArray.append('Yandex Cloud')
+            elif iter in ['MS SQL', 'Microsoft Server']:
                 correctArray.append('Microsoft SQL Server')
+            elif iter == 'Xen':
+                correctArray.append('XenDesktop')
+            elif iter == 'MLFlow':
+                correctArray.append('MLflow')
             elif iter in ['TCP', 'IPv4']:
                 correctArray.append('TCP/IP')
-            elif iter == 'TerraForm':
+            elif iter == 'Airflow':
+                correctArray.append('AirFlow')
+            elif iter == 'ArgoCD':
+                correctArray.append('Argo CD')
+            elif iter == 'Buildkite':
+                correctArray.append('Buildkit')
+            elif iter == 'Burp':
+                correctArray.append('Burp Suite')
+            elif iter == 'Github Actions':
+                correctArray.append('GitHub Actions')
+            elif iter == 'Gitlab':
+                correctArray.append('GitLab')
+            elif iter == 'Golang':
+                correctArray.append('Go')
+            elif iter == 'Green':
+                correctArray.append('Greenplum')
+            elif iter in ['TerraForm', 'TerraForm']:
                 correctArray.append('Terraform')
             elif iter == 'Apache Kafka':
                 correctArray.append('Kafka')
-            elif iter in ['tcpdump', 'vSphere']:
+            elif iter in ['tcpdump', 'vSphere', 'vSphere']:
                 correctArray.append(iter[0].upper() + iter[1:])
             elif ('/' not in iter) or (iter in exceptions):
                 correctArray.append(iter)
