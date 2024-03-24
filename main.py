@@ -23,6 +23,7 @@ for message in messages:
         job._get_last_vacancy(messages)
         break
 
+
 mysql = Mysql()
 
 skills_list = mysql._get_skills()
@@ -32,6 +33,18 @@ for key, value in job.amountOfSkill.items():
     else:
         mysql._insert_into_skills_amount(key, value)
 mysql._update_vacancies_amount(job.amountOfVacancions)
+
+
+for salary, stack in job.valueOfSalary.items():
+    stack = list(set(stack))
+    valueOfVacancy = 0
+    for skill in stack:
+        amount = mysql._get_skill_amount(skill)
+        valueOfVacancy += amount
+    for skill in stack:
+        amount = mysql._get_skill_amount(skill)
+        valueOfSkill = int(salary * amount / valueOfVacancy)
+        print(skill, valueOfSkill)
 
 
 

@@ -3,12 +3,12 @@ from telethon.tl.functions.messages import GetDialogsRequest
 from telethon.tl.types import InputPeerEmpty
 
 from config import api_id, api_hash
-from last_vacancy import lastVacancy 
 
 class Parcer:
 
     def __init__(self):
         self.amountOfSkill = {}
+        self.valueOfSalary = {}
         self.amountOfVacancions = 0
         self.client = TelegramClient('test_tg', api_id, api_hash)
         self.client.start()
@@ -64,6 +64,8 @@ class Parcer:
                 correctArray.append('Docker')
             elif iter == 'VMware':
                 correctArray.append('VMWare')
+            elif iter == 'Cosmos DB':
+                correctArray.append('CosmosDB')
             elif iter == 'Victoria Metrics':
                 correctArray.append('VictoriaMetrics')
             elif iter == 'Saltstack':
@@ -153,7 +155,8 @@ class Parcer:
     
     def _get_value(self, stack: list[str], salary:int) -> dict[str:int]:
         if salary != 'Вакансия без зарплаты':
-            cost = salary / len(stack)
+            self.valueOfSalary.setdefault(salary, [])
+            self.valueOfSalary[salary].extend(stack)
         for skill in stack:
             # resultStack[skill] = cost
             self.amountOfSkill.setdefault(skill, 0)
