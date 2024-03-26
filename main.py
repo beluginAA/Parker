@@ -37,14 +37,21 @@ mysql._update_vacancies_amount(job.amountOfVacancions)
 
 for salary, stack in job.valueOfSalary.items():
     stack = list(set(stack))
-    valueOfVacancy = 0
+    valueOfVacancy = sum([mysql._get_skill_amount(skill) for skill in stack])
+    skillsList = mysql._get_skills_from_value()
     for skill in stack:
         amount = mysql._get_skill_amount(skill)
-        valueOfVacancy += amount
-    for skill in stack:
-        amount = mysql._get_skill_amount(skill)
-        valueOfSkill = int(salary * amount / valueOfVacancy)
-        print(skill, valueOfSkill)
+        valueVacancy = int(salary * amount / valueOfVacancy)
+        if skill in skillsList:
+            valueTable = mysql._get_skill_value(skill)
+            valueOfSkill = int((valueVacancy + valueTable) / 2)
+            mysql._update_value_amount(skill, valueOfSkill)
+        else:
+            mysql._insert_into_skills_value(skill, valueVacancy)
+averageSalVacancy = sum([salary for salary in job.valueOfSalary.keys()]) / len(job.valueOfSalary.keys())
+averageSalTable = mysql._get_average_salary()
+averageSalary = int((averageSalTable + averageSalVacancy) / 2)
+mysql._update_average_salary(averageSalary)
 
 
 
