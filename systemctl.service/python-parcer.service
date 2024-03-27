@@ -1,0 +1,13 @@
+[Unit]
+Description=Python Script Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home
+ExecStart=/usr/local/bin/python /home/main.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

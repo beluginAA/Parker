@@ -2,6 +2,7 @@ from parcer import Parcer
 from mysql import Mysql
 
 from last_vacancy import lastVacancy 
+from loguru import logger
 
 job = Parcer()
 
@@ -48,10 +49,11 @@ for salary, stack in job.valueOfSalary.items():
             mysql._update_value_amount(skill, valueOfSkill)
         else:
             mysql._insert_into_skills_value(skill, valueVacancy)
-averageSalVacancy = sum([salary for salary in job.valueOfSalary.keys()]) / len(job.valueOfSalary.keys())
-averageSalTable = mysql._get_average_salary()
-averageSalary = int((averageSalTable + averageSalVacancy) / 2)
-mysql._update_average_salary(averageSalary)
+if job.valueOfSalary != {}:
+    averageSalVacancy = sum([salary for salary in job.valueOfSalary.keys()]) / len(job.valueOfSalary.keys())
+    averageSalTable = mysql._get_average_salary()
+    averageSalary = int((averageSalTable + averageSalVacancy) / 2)
+    mysql._update_average_salary(averageSalary)
 
 
 

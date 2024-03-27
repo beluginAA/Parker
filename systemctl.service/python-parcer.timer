@@ -1,0 +1,12 @@
+[Unit]
+Description=Run My Python Script on Tuesdays and Fridays at 19:00
+
+[Timer]
+OnCalendar=Tue,Fri *-*-* 19:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+
+[Timer]
+Unit=python-parcer.service

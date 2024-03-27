@@ -19,7 +19,19 @@ services:
     restart: always
     ports:
       - 3000:3000
+    volumes:
+      - /Users/aleksandrbelugin/Applications/grafana_data:/var/lib/grafana
     container_name: grafana-parcer-server
+  
+  python:
+    image: python:parcer
+    restart: always
+    volumes:
+      - /Users/aleksandrbelugin/Applications/Parker:/home
+    command: ["python", "/home/bot.py"]
+    networks:
+      - db_network
+    container_name: python-parcer
 
 networks:
   db_network:
