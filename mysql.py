@@ -57,6 +57,18 @@ class Mysql:
             return company_list
         except Exception as ex:
             print("Mistake while getting companies...")
+
+    def _get_companies_for_salary(self) -> list[str]:
+        try:
+            with self.connection.cursor() as cursor:
+                get_companies_query = "SELECT company FROM companies_average_salary;"
+                cursor.execute(get_companies_query)
+                
+                rows = cursor.fetchall()
+                company_list = [row['company'] for row in rows]
+            return company_list
+        except Exception as ex:
+            print("Mistake while getting companies for average salary...")
     
     def _get_skills_from_value(self) -> list[str]:
         try:
@@ -137,6 +149,19 @@ class Mysql:
                 return skill_amount
         except Exception as ex:
             print("Mistake while gitting skill's amount...")
+    
+    def _get_company_average_salary(self, company:str) -> int:
+        try:
+            with self.connection.cursor() as cursor:
+                get_table_query = f"SELECT average_salary FROM companies_average_salary WHERE company = '{company}';"
+                cursor.execute(get_table_query)
+
+                rows = cursor.fetchall()
+                average_salary = rows[0]['average_salary']
+                self.connection.commit()
+                return average_salary
+        except Exception as ex:
+            print("Mistake while gitting companie's average salary...")
 
     def _insert_into_skills_amount(self, skill: str, amount: int) -> None:
         try:
@@ -146,6 +171,15 @@ class Mysql:
                 self.connection.commit()
         except Exception as ex:
             print("Mistake while inserting into skill's amount...")
+    
+    def _insert_into_company_average_salary(self, company: str, salary: int) -> None:
+        try:
+            with self.connection.cursor() as cursor:
+                insert_table_query = f"INSERT INTO companies_average_salary (company, average_salary) VALUES ('{company}', {salary});"
+                cursor.execute(insert_table_query)
+                self.connection.commit()
+        except Exception as ex:
+            print("Mistake while inserting into companie's average salary...")
     
     def _insert_into_companies_amount(self, company: str, amount: int) -> None:
         try:
@@ -169,6 +203,15 @@ class Mysql:
         try:
             with self.connection.cursor() as cursor:
                 update_table_query = f"UPDATE skills_amount SET amount = amount + {value} WHERE skill = '{skill}';"
+                cursor.execute(update_table_query)
+                self.connection.commit()
+        except Exception as ex:
+            print("Mistake while updating skill's amount...")
+    
+    def _update_company_average_salary(self, company:str, value: int) -> None:
+        try:
+            with self.connection.cursor() as cursor:
+                update_table_query = f"UPDATE companies_average_salary SET average_salary = {value} WHERE company = '{company}';"
                 cursor.execute(update_table_query)
                 self.connection.commit()
         except Exception as ex:

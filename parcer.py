@@ -7,9 +7,8 @@ from config import api_id, api_hash, expressions
 class Parcer:
 
     def __init__(self):
-        self.amountOfSkill = {}
-        self.valueOfSalary = {}
-        self.amountOfCompanies = {}
+        self.amountOfSkill, self.valueOfSalary = {}, {}
+        self.amountOfCompanies, self.valueofCompany = {}, {}
         self.amountOfVacancions = 0
         self.client = TelegramClient('test_tg', api_id, api_hash)
         self.client.start()
@@ -38,16 +37,18 @@ class Parcer:
         return company, salary, stack
 
     def _get_salary(self, string:str) -> int:
-        for deli in ['₽', '€', '$']:
+        currencies = {'₽':1, '€':99.53, '$':92.37}
+        for deli in currencies.keys():
             if deli in string:
                 delimiter = ' ' + deli 
+                multiplier = currencies[deli]
         amount = string.split(delimiter)[0]
         if '—‍' in amount:
             left, right = [int(number.replace(' ', '').replace('\\u*d', '').replace("≈", "")) for number in amount.split(' —‍ ')]
             salary = int((left+right)/2)
         else:
             salary = int(amount.replace("от ", "").replace(" ", "").replace("≈ ", ""))
-        return salary
+        return salary * multiplier
 
     def _get_company(self, company: str) -> str:
         valueList = company.split('@')[1]
@@ -76,6 +77,8 @@ class Parcer:
             self.amountOfSkill[skill] += 1
         self.amountOfCompanies.setdefault(company, 0)
         self.amountOfCompanies[company] += 1
+        self.valueofCompany.setdefault(company, [])
+        self.valueofCompany[company].append(salary)
         # return stack
     
     @staticmethod

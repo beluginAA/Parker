@@ -7,9 +7,12 @@ from loguru import logger
 job = Parcer()
 
 messages = job._get_dialogs()
-
+iter = 0
 for message in messages:
-    if message.text != lastVacancy:
+    iter += 1
+    if iter == 10:
+        break
+    if message != lastVacancy:
         company, salary, stack = job._get_info(message)
         if not stack or not salary: 
             continue
@@ -28,6 +31,18 @@ for message in messages:
 
 mysql = Mysql()
 
+companiesListSalary = mysql._get_companies_for_salary()
+for key, value in job.valueofCompany.items():
+    lenCompany = sum([salary != 'Вакансия без зарплаты' for salary in value])
+    if lenCompany != 0:
+        if key in companiesListSalary:
+            salaryValue = sum([int(salary) for salary in value]) / len(value)
+            averageTable = mysql._get_company_average_salary(key)
+            averageSalary = int((salaryValue + averageTable) / 2)
+            mysql._update_company_average_salary(key, averageSalary)
+        else:
+            mysql._insert_into_company_average_salary(key, int(value[0]))
+
 skillsList = mysql._get_skills()
 for key, value in job.amountOfSkill.items():
     if key in skillsList:
@@ -41,8 +56,8 @@ for key, value in job.amountOfCompanies.items():
         mysql._update_companies_amount(key, value)
     else:
         mysql._insert_into_companies_amount(key, value)
-mysql._update_vacancies_amount(job.amountOfVacancions)
 
+mysql._update_vacancies_amount(job.amountOfVacancions)
 
 for salary, stack in job.valueOfSalary.items():
     stack = list(set(stack))
@@ -62,7 +77,3 @@ if job.valueOfSalary != {}:
     averageSalTable = mysql._get_average_salary()
     averageSalary = int((averageSalTable + averageSalVacancy) / 2)
     mysql._update_average_salary(averageSalary)
-
-
-
-
