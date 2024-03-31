@@ -9,6 +9,7 @@ class Parcer:
     def __init__(self):
         self.amountOfSkill = {}
         self.valueOfSalary = {}
+        self.amountOfCompanies = {}
         self.amountOfVacancions = 0
         self.client = TelegramClient('test_tg', api_id, api_hash)
         self.client.start()
@@ -27,12 +28,14 @@ class Parcer:
             for iter in information:
                 if 'на руки' in iter:
                     salary = iter
+                elif '@' in iter:
+                    company = iter
                 elif 'Стек' in iter:
                     stack = iter
                     break
         if salary == '':
             salary = 'Вакансия без зарплаты'
-        return salary, stack
+        return company, salary, stack
 
     def _get_salary(self, string:str) -> int:
         for deli in ['₽', '€', '$']:
@@ -45,7 +48,12 @@ class Parcer:
         else:
             salary = int(amount.replace("от ", "").replace(" ", "").replace("≈ ", ""))
         return salary
-    
+
+    def _get_company(self, company: str) -> str:
+        valueList = company.split('@')[1]
+        companyValue = valueList.lstrip().replace('*', '')
+        return companyValue
+
     def _get_stack(self, string:str) -> list[str]:
         array = string.replace('**Стек**: ', '').replace('.', '').split(', ')
         exceptions = ['CI/CD', 'TCP/IP']
@@ -58,7 +66,7 @@ class Parcer:
                 correctArray.extend(iter)
         return correctArray
     
-    def _get_value(self, stack: list[str], salary:int) -> dict[str:int]:
+    def _get_value(self, stack: list[str], salary:int, company: str) -> dict[str:int]:
         if salary != 'Вакансия без зарплаты':
             self.valueOfSalary.setdefault(salary, [])
             self.valueOfSalary[salary].extend(stack)
@@ -66,6 +74,8 @@ class Parcer:
             # resultStack[skill] = cost
             self.amountOfSkill.setdefault(skill, 0)
             self.amountOfSkill[skill] += 1
+        self.amountOfCompanies.setdefault(company, 0)
+        self.amountOfCompanies[company] += 1
         # return stack
     
     @staticmethod

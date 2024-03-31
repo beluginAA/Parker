@@ -10,16 +10,17 @@ messages = job._get_dialogs()
 
 for message in messages:
     if message.text != lastVacancy:
-        salary, stack = job._get_info(message)
+        company, salary, stack = job._get_info(message)
         if not stack or not salary: 
             continue
         job.amountOfVacancions += 1
         correctStack = job._get_stack(stack)
+        correctCompany = job._get_company(company)
         if salary != 'Вакансия без зарплаты':
             correctSalary = job._get_salary(salary)
-            job._get_value(correctStack, correctSalary)
+            job._get_value(correctStack, correctSalary, correctCompany)
         else:
-            job._get_value(correctStack, salary)
+            job._get_value(correctStack, salary, correctCompany)
     else:
         job._get_last_vacancy(messages)
         break
@@ -27,12 +28,19 @@ for message in messages:
 
 mysql = Mysql()
 
-skills_list = mysql._get_skills()
+skillsList = mysql._get_skills()
 for key, value in job.amountOfSkill.items():
-    if key in skills_list:
+    if key in skillsList:
         mysql._update_skills_amount(key, value)
     else:
         mysql._insert_into_skills_amount(key, value)
+
+companiesList = mysql._get_companies()
+for key, value in job.amountOfCompanies.items():
+    if key in skillsList:
+        mysql._update_companies_amount(key, value)
+    else:
+        mysql._insert_into_companies_amount(key, value)
 mysql._update_vacancies_amount(job.amountOfVacancions)
 
 
