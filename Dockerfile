@@ -6,6 +6,7 @@ RUN apt update && apt install sudo systemctl -y && \
     pip install loguru pymysql telethon telebot && \
     sudo systemctl daemon-reload && \
     sudo systemctl enable python-parcer.service && \
-    sudo systemctl enable python-parcer.timer
+    sudo systemctl enable python-parcer.timer && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home

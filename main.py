@@ -9,10 +9,7 @@ job = Parcer()
 messages = job._get_dialogs()
 iter = 0
 for message in messages:
-    iter += 1
-    if iter == 10:
-        break
-    if message != lastVacancy:
+    if message.text != lastVacancy:
         company, salary, stack = job._get_info(message)
         if not stack or not salary: 
             continue
@@ -52,7 +49,7 @@ for key, value in job.amountOfSkill.items():
 
 companiesList = mysql._get_companies()
 for key, value in job.amountOfCompanies.items():
-    if key in skillsList:
+    if key in companiesList:
         mysql._update_companies_amount(key, value)
     else:
         mysql._insert_into_companies_amount(key, value)

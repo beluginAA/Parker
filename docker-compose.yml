@@ -17,6 +17,10 @@ services:
   grafana:
     image: grafana/grafana:10.2.4
     restart: always
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_SECURITY_ADMIN_USER=beluginAA
+      - GF_SECURITY_ADMIN_PASSWORD=user1234
     ports:
       - 3000:3000
     volumes:
