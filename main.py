@@ -7,7 +7,6 @@ from loguru import logger
 job = Parcer()
 
 messages = job._get_dialogs()
-iter = 0
 for message in messages:
     if message.text != lastVacancy:
         company, salary, stack = job._get_info(message)
@@ -24,7 +23,6 @@ for message in messages:
     else:
         job._get_last_vacancy(messages)
         break
-
 
 mysql = Mysql()
 
