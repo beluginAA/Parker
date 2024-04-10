@@ -172,10 +172,10 @@ class Mysql:
         except Exception as ex:
             print("Mistake while inserting into skill's amount...")
     
-    def _insert_into_company_average_salary(self, company: str, salary: int) -> None:
+    def _insert_into_company_average_salary(self, company: str, salary: int, currency = '₽') -> None:
         try:
             with self.connection.cursor() as cursor:
-                insert_table_query = f"INSERT INTO companies_average_salary (company, average_salary) VALUES ('{company}', {salary});"
+                insert_table_query = f"INSERT INTO companies_average_salary (company, average_salary, currency) VALUES ('{company}', {salary}, {currency});"
                 cursor.execute(insert_table_query)
                 self.connection.commit()
         except Exception as ex:

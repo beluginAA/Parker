@@ -16,8 +16,8 @@ for message in messages:
         correctStack = job._get_stack(stack)
         correctCompany = job._get_company(company)
         if salary != 'Вакансия без зарплаты':
-            correctSalary = job._get_salary(salary)
-            job._get_value(correctStack, correctSalary, correctCompany)
+            correctSalary, correctCurrency = job._get_salary(salary)
+            job._get_value(correctStack, correctSalary, correctCurrency, correctCompany)
         else:
             job._get_value(correctStack, salary, correctCompany)
     else:
@@ -37,6 +37,13 @@ for key, value in job.valueofCompany.items():
             mysql._update_company_average_salary(key, averageSalary)
         else:
             mysql._insert_into_company_average_salary(key, int(value[0]))
+for key, value in job.valueofCompanyForeign.items():
+    if key in companiesListSalary:
+        averageTable = mysql._get_company_average_salary(key)
+        averageSalary = int((value[0] + averageTable) / 2)
+        mysql._update_company_average_salary(key, averageSalary)
+    else:
+        mysql._insert_into_company_average_salary(key, int(value[0]), value[1])
 
 skillsList = mysql._get_skills()
 for key, value in job.amountOfSkill.items():

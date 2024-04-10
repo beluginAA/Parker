@@ -8,7 +8,7 @@ class Parcer:
 
     def __init__(self):
         self.amountOfSkill, self.valueOfSalary = {}, {}
-        self.amountOfCompanies, self.valueofCompany = {}, {}
+        self.amountOfCompanies, self.valueofCompany, self.valueofCompanyForeign = {}, {}, {}
         self.amountOfVacancions = 0
         self.client = TelegramClient('test_tg', api_id, api_hash)
         self.client.start()
@@ -21,7 +21,7 @@ class Parcer:
                 break
         return messages
 
-    def _get_info(self, vacancy: str, salary = '', stack = '') -> list[str]:
+    def _get_info(self, vacancy: str, salary = '', stack = '', company = '') -> list[str]:
         information = vacancy.text.split('\n')
         if len(information) > 5:
             for iter in information:
@@ -36,19 +36,20 @@ class Parcer:
             salary = 'Вакансия без зарплаты'
         return company, salary, stack
 
-    def _get_salary(self, string:str) -> int:
+    def _get_salary(self, string:str) -> list[int, str]:
         currencies = {'₽':1, '€':99.53, '$':92.37}
         for deli in currencies.keys():
             if deli in string:
                 delimiter = ' ' + deli 
                 multiplier = currencies[deli]
+                currency = deli
         amount = string.split(delimiter)[0]
         if '—‍' in amount:
             left, right = [int(number.replace(' ', '').replace('\\u*d', '').replace("≈", "")) for number in amount.split(' —‍ ')]
             salary = int((left+right)/2)
         else:
             salary = int(amount.replace("от ", "").replace(" ", "").replace("≈ ", ""))
-        return salary * multiplier
+        return salary * multiplier, currency
 
     def _get_company(self, company: str) -> str:
         valueList = company.split('@')[1]
@@ -66,18 +67,23 @@ class Parcer:
                 correctArray.extend(iter)
         return correctArray
     
-    def _get_value(self, stack: list[str], salary:int, company: str) -> dict[str:int]:
-        if salary != 'Вакансия без зарплаты':
+    def _get_value(self, stack: list[str], salary:int, currency: str, company: str) -> dict[str:int]:
+        if (salary != 'Вакансия без зарплаты') and (currency == '₽'):
             self.valueOfSalary.setdefault(salary, [])
             self.valueOfSalary[salary].extend(stack)
         for skill in stack:
             # resultStack[skill] = cost
             self.amountOfSkill.setdefault(skill, 0)
             self.amountOfSkill[skill] += 1
-        self.amountOfCompanies.setdefault(company, 0)
-        self.amountOfCompanies[company] += 1
-        self.valueofCompany.setdefault(company, [])
-        self.valueofCompany[company].append(salary)
+        if 'Название скрыто' not in company:
+            self.amountOfCompanies.setdefault(company, 0)
+            self.amountOfCompanies[company] += 1
+            if currency != '₽':
+                self.valueofCompanyForeign.setdefault(company, [])
+                self.valueofCompanyForeign[company].extend([salary, currency])
+            else:
+                self.valueofCompany.setdefault(company, [])
+                self.valueofCompanyp[company].append(salary)
         # return stack
     
     @staticmethod
