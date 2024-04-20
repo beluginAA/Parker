@@ -8,6 +8,7 @@ from mysql import Mysql
 from last_vacancy import lastVacancy 
 
 import sys
+import yaml
 
 class Parcer:
 
@@ -80,6 +81,8 @@ class Parcer:
                 iter = [skill.lstrip().rstrip() for skill in iter.split('/')]
                 correctArray.extend(iter)
         return correctArray
+
+    # def _get_geography(self, place:str) -> None:
     
     def _get_value(self, stack: list[str], salary:int, currency: str, company: str) -> dict[str:int]:
         Parcer.loggerParcer.info('Working on value of vacancy.')
@@ -135,6 +138,7 @@ class Vacancies:
         self.mysql = Mysql()
 
     def _get_information(self) -> None:
+        self.job.loggerParcer.info('Getting information about vacantions.')
         messages = self.job._get_dialogs()
         for message in messages:
             if message.text != lastVacancy:
@@ -155,6 +159,7 @@ class Vacancies:
                 break
 
     def _update_company_information(self) -> None:
+        self.job.loggerParcer.info('Updating information about companies.')
         companiesListSalary = self.mysql._get_companies_for_salary()
         for key, value in self.job.valueofCompany.items():
             lenCompany = sum([salary != 'Вакансия без зарплаты' for salary in value])
@@ -175,6 +180,7 @@ class Vacancies:
                 self.mysql._insert_into_company_average_salary(key, int(value[0]), value[1])
 
     def _update_skills_list(self) -> None:
+        self.job.loggerParcer.info('Update skills list.')
         skillsList = self.mysql._get_skills()
         for key, value in self.job.amountOfSkill.items():
             if key in skillsList:
@@ -183,6 +189,7 @@ class Vacancies:
                 self.mysql._insert_into_skills_amount(key, value)
 
     def _update_companies_list(self) -> None:
+        self.job.loggerParcer.info('Update companies list.')
         companiesList = self.mysql._get_companies()
         for key, value in self.job.amountOfCompanies.items():
             if key in companiesList:
@@ -192,6 +199,7 @@ class Vacancies:
         self.mysql._update_vacancies_amount(self.job.amountOfVacancions)
 
     def _update_skills_value(self) -> None:
+        self.job.loggerParcer.info('Updating skills value.')
         for salary, stack in self.job.valueOfSalary.items():
             stack = list(set(stack))
             valueOfVacancy = sum([self.mysql._get_skill_amount(skill) for skill in stack])
@@ -211,4 +219,23 @@ class Vacancies:
             averageSalary = int((averageSalTable + averageSalVacancy) / 2)
             self.mysql._update_average_salary(averageSalary)
     
+
+# from config import host, port, user, password, database
+# import pymysql
+
+# with open('stations.yaml') as fh:
+#     read_data = yaml.load(fh, Loader=yaml.FullLoader)
+#     connection = pymysql.connect(host=host, port=port, 
+#     user=user, password=password, 
+#     database=database, cursorclass=pymysql.cursors.DictCursor)
+#     for i in range(0, len(read_data)):
+#         for key, value in read_data[i].items():
+#             if key == 'name':
+#                 station_name = value
+#             elif key == 'coords':
+#                 A, B = float(value['lat']), float(value['lon'])
+#         with connection.cursor() as cursor:
+#             insert_table_query = f"INSERT INTO stations_info (name, longitude, width) VALUES ('{station_name}', {A}, {B});"
+#             cursor.execute(insert_table_query)
+#             connection.commit()
 
